@@ -67,10 +67,19 @@ const BottomTabs = () => {
 
   if (isInitializing) {
     return (
-      <View style={styles.loadingWrapper}>
+      <View
+        style={{
+          ...styles.loadingWrapper,
+          backgroundColor: theme.colors.background,
+        }}
+      >
         <ActivityIndicator />
       </View>
     );
+  }
+
+  if (!isInitializing && !user) {
+    return null;
   }
 
   return (

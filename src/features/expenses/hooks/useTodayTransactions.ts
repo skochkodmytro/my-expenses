@@ -5,8 +5,10 @@ import { useTodayTransactionStore } from '../store';
 import { Transaction } from '../types';
 
 import useTransactionsWithCategories from './useTransactionsWithCategories';
+import { useUserStore } from '@/features/auth';
 
 const useTodayTransactions = () => {
+  const { user } = useUserStore();
   const {
     transactions,
     isLoading: isFetchTransactionsLoading,
@@ -18,7 +20,7 @@ const useTodayTransactions = () => {
 
   useEffect(() => {
     if (!isFetchedTransactions) {
-      fetchTodayTransactions();
+      fetchTodayTransactions(user?.uid as string);
     }
   }, []);
 

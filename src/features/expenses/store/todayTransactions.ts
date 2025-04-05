@@ -14,7 +14,7 @@ interface TransactionStore {
   isCreating: boolean;
   isEditing: boolean;
   deleteTransactionId: string | null;
-  fetchTodayTransactions: () => Promise<void>;
+  fetchTodayTransactions: (userId: string) => Promise<void>;
   addTransaction: (newTransaction: Omit<Transaction, 'id'>) => Promise<void>;
   editTransaction: (newTransaction: Transaction) => Promise<void>;
   deleteTransaction: (transactionId: string) => Promise<void>;
@@ -33,7 +33,7 @@ const initialStore = {
 export const useTodayTransactionStore = create<TransactionStore>((set) => ({
   ...initialStore,
 
-  fetchTodayTransactions: async () => {
+  fetchTodayTransactions: async (userId) => {
     set({ isLoading: true });
     try {
       const today = dayjs().startOf('day').toDate();
@@ -43,6 +43,7 @@ export const useTodayTransactionStore = create<TransactionStore>((set) => ({
         .orderBy('date', 'desc')
         .where('date', '>=', firestore.Timestamp.fromDate(today))
         .where('date', '<=', firestore.Timestamp.fromDate(tomorrow))
+        .where('userId', '==', userId)
         .get();
 
       const transactions = snapshot.docs.map(
